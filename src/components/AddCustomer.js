@@ -1,4 +1,4 @@
-/*import React from 'react';
+import React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -9,8 +9,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export default function AddCustomer(props) { 
     const [open, setOpen] = React.useState(false);
-    const [car, setCar] = React.useState({
-        brand: '', model: '', color: '', fuel: '', year: '', price:''
+    const [customer, setCustomer] = React.useState({
+        firstname: '', lastname: '', streetaddress: '', postcode: '', city: '', email:'', phone:''
     })
 
 
@@ -23,75 +23,83 @@ export default function AddCustomer(props) {
     };
 
     const handleInputChange = (e) => {
-        setCar({...car, [e.target.name]: e.target.value})
+        setCustomer({...customer, [e.target.name]: e.target.value})
     }
     
-    const addCar = () => {
-        props.saveCar(car);
+    const addCustomer = () => {
+        props.saveCustomer(customer);
         handleClose()
     }
 
     return(
     <div>
     <Button style={{margin: 10}} variant="outlined" onClick={handleClickOpen}>
-        Add Car
+        Add Customer
     </Button>
     <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add car</DialogTitle>
+        <DialogTitle>Add customer</DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
                     margin="dense"
-                    name="brand"
-                    value={car.brand}
+                    name="firstname"
+                    value={customer.firstname}
                     onChange={e => handleInputChange(e)}
-                    label="Brand"
+                    label="First name"
                     fullWidth
                 />
                     <TextField
                     margin="dense"
-                    name="model"
-                    value={car.model}
+                    name="lastname"
+                    value={customer.lastname}
                     onChange={e => handleInputChange(e)}
-                    label="Model"
+                    label="Last Name"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="color"
-                    value={car.color}
+                    name="streetaddress"
+                    value={customer.streetaddress}
                     onChange={e => handleInputChange(e)}
-                    label="Color"
+                    label="Address"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="year"
-                    value={car.year}
+                    name="postcode"
+                    value={customer.postcode}
                     onChange={e => handleInputChange(e)}
-                    label="Year"
+                    label="Postcode"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="fuel"
-                    value={car.fuel}
+                    name="city"
+                    value={customer.city}
                     onChange={e => handleInputChange(e)}
-                    label="Fuel"
+                    label="City"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="price"
-                    value={car.price}
+                    name="email"
+                    value={customer.email}
                     onChange={e => handleInputChange(e)}
-                    label="Price"
+                    label="Email"
+                    fullWidth
+                />
+                 <TextField
+                    margin="dense"
+                    name="phone"
+                    value={customer.phone}
+                    onChange={e => handleInputChange(e)}
+                    label="Phone"
                     fullWidth
                 />
             </DialogContent>
     <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={addCar}>Add</Button>
+        <Button onClick={addCustomer}>Add</Button>
     </DialogActions>
     </Dialog>
     </div>
@@ -99,4 +107,4 @@ export default function AddCustomer(props) {
     );
 
 
-}
+} 

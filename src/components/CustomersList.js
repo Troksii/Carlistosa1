@@ -3,8 +3,8 @@ import ReactTable from 'react-table';
 import 'react-table/react-table.css'
 import Snackbar from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
-//import AddCustomer from './AddCustomer';
-//import EditCustomers from './Editcustomers';
+import AddCustomer from './AddCustomer';
+import EditCustomers from './EditCustomers';
 
 export default function CustomersList() {
     const [customers, setCustomers] = useState([]);
@@ -22,6 +22,39 @@ export default function CustomersList() {
         setOpen(false);
     }; 
 
+    const deleteCustomer = (link) => {
+        if (window.confirm('Delete customer?')) {
+        setOpen(true);
+        fetch(link, {method: 'DELETE'})
+        .then(res => fetchData())
+        .catch(err => console.error(err))
+    }
+    }
+    
+    const saveCustomer = (customer) => {
+    fetch('https://customerrest.herokuapp.com/api/customers', {
+        method : 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(customer)
+
+     })
+    .then(res => fetchData())
+    .catch(err => console.error(err))
+    }
+
+    const updateCustomer = (link, customer) => {
+        fetch(link, {
+        method : 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(customer)
+     }) 
+     .then (res => fetchData())
+     .catch (err => console.error(err))
+     }
     const columns = [
         {
             Header: 'First name',
@@ -52,12 +85,26 @@ export default function CustomersList() {
             Header: 'Phone',
             accessor: 'phone'
         },
+        {
+            sortable: false,
+            filterable: false,
+            width: 100,
+        accessor: 'links.0.href',
+        Cell: row => <Button variant="outlined" color="error" onClick={() => deleteCustomer(row.value)}>Delete</Button>
+        },
+        {
+            sortable: false,
+            filterable: false,
+            width: 100,
+            Cell: row => <EditCustomers  updateCustomer={updateCustomer} customer={row.original} />
+        }
 
     ]
 
+
     return (
         <div>
-
+            <AddCustomer saveCustomer={saveCustomer} />
             <ReactTable filterable={true}  data={customers} columns={columns} />
             <Snackbar
                 open={open}

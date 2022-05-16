@@ -1,4 +1,4 @@
-/*import React from 'react';
+import React from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -9,91 +9,106 @@ import DialogTitle from '@mui/material/DialogTitle';
 
 export default function EditCustomers(props) { 
     const [open, setOpen] = React.useState(false);
-    const [car, setCar] = React.useState({
-        brand: '', model: '', color: '', fuel: '', year: '', price:''
+    const [customer, setCustomer] = React.useState({
+        firstname: '', lastname: '', streetaddress: '', postcode: '', city: '', email:'', phone:''
     })
 
 
     const handleClickOpen = () => {
-        console.log(props.car);
-        setCar({brand : props.car.brand, model: props.car.model, color: props.car.color, fuel: props.car.fuel, year: props.car.year, price: props.car.price})
-        setOpen(true);
+        console.log(props.customer);
+        setCustomer({firstname: props.customer.firstname,
+                    lastname: props.customer.lastname,
+                    streetaddress: props.customer.streetaddress,
+                    postcode: props.customer.postcode,
+                    city: props.customer.city,
+                    email: props.customer.email,
+                    phone: props.customer.phone})
+      setOpen(true);
     };
   
     const handleClose = () => {
-        setOpen(false);
+      setOpen(false);
     };
 
     const handleInputChange = (e) => {
-        setCar({...car, [e.target.name]: e.target.value})
+        setCustomer({...customer, [e.target.name]: e.target.value})
     }
     
-    const updateCar = () => {
-        props.updateCar(car, props.car._links.car.href);
-        handleClose()
+    const updateCustomer = () => {
+        props.updateCustomer(customer, props.customer.links.href);
+        handleClose();
     }
+  
 
     return(
     <div>
-    <Button onClick={handleClickOpen} size="small">
-        Edit car
+    <Button variant="outlined" onClick={handleClickOpen}>
+        Edit
     </Button>
     <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Edit car</DialogTitle>
+        <DialogTitle>Edit customer</DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
                     margin="dense"
-                    name="brand"
-                    value={car.brand}
+                    name="firstname"
+                    value={customer.firstname}
                     onChange={e => handleInputChange(e)}
-                    label="Brand"
+                    label="First name"
                     fullWidth
                 />
                     <TextField
                     margin="dense"
-                    name="model"
-                    value={car.model}
+                    name="lastname"
+                    value={customer.lastname}
                     onChange={e => handleInputChange(e)}
-                    label="Model"
+                    label="Last Name"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="color"
-                    value={car.color}
+                    name="streetaddress"
+                    value={customer.streetaddress}
                     onChange={e => handleInputChange(e)}
-                    label="Color"
+                    label="Address"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="year"
-                    value={car.year}
+                    name="postcode"
+                    value={customer.postcode}
                     onChange={e => handleInputChange(e)}
-                    label="Year"
+                    label="Postcode"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="fuel"
-                    value={car.fuel}
+                    name="city"
+                    value={customer.city}
                     onChange={e => handleInputChange(e)}
-                    label="Fuel"
+                    label="City"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="price"
-                    value={car.price}
+                    name="email"
+                    value={customer.email}
                     onChange={e => handleInputChange(e)}
-                    label="Price"
+                    label="Email"
+                    fullWidth
+                />
+                 <TextField
+                    margin="dense"
+                    name="phone"
+                    value={customer.phone}
+                    onChange={e => handleInputChange(e)}
+                    label="Phone"
                     fullWidth
                 />
             </DialogContent>
     <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={updateCar}>Update</Button>
+        <Button onClick={updateCustomer}>Update</Button>
     </DialogActions>
     </Dialog>
     </div>
@@ -102,4 +117,3 @@ export default function EditCustomers(props) {
 
 
 }
-

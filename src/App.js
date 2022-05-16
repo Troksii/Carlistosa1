@@ -7,15 +7,22 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {  BrowserRouter,  Routes,  Route,  Link, Outlet, } from"react-router-dom";
+import Button from '@mui/material/Button';
 
 function App() {
+  
   return (
     <div className="App">
     <Box sx={{ flexGrow: 1 }}>
   <AppBar position="static">
     <Toolbar>
-    <Link to="/">Customers </Link>
+    <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
+    <Button variant="outlined"><Link to="/">Customers </Link>
+      </Button>
+      <Button variant="outlined">
     <Link to="/TrainingsList">Trainings </Link>
+    </Button>
+    </Typography>
     </Toolbar>
   </AppBar>
 </Box>

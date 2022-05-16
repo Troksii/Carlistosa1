@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css'
 import Snackbar from '@mui/material/Snackbar';
-//import Button from '@mui/material/Button';
-//import Addcar from './Addcar';
-//import Editcar from './Editcar';
+import Button from '@mui/material/Button';
+import AddTraining from './AddTraining';
+import EditTrainings from './EditTrainings';
+
 export default function TrainingsList() {
     const [trainings, setTrainings] = useState([]);
     const [open, setOpen] = React.useState(false);
     useEffect(() => fetchData(), []);
     
 
-    const dayjs = require('dayjs')
+    const dayjs = require('dayjs') 
     //import dayjs from 'dayjs' // ES 2015
     dayjs().format()
 
@@ -24,6 +25,39 @@ export default function TrainingsList() {
     const handleClose = () => {
         setOpen(false);
     };
+    const deleteTraining = (link) => {
+        if (window.confirm('Delete?'))
+        setOpen(true);
+        fetch(link, {method: 'DELETE'})
+        .then(res => fetchData())
+        .catch(err => console.error(err))
+       
+    }
+    
+    const saveTraining = (training) => {
+    fetch('https://customerrest.herokuapp.com/api/trainings', {
+        method : 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(training)
+
+     })
+    .then(res => fetchData())
+    .catch(err => console.error(err))
+    }
+
+    const updateTraining = (training,link) => {
+        fetch(link, {
+        method : 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(training)
+     }) 
+     .then (res => fetchData())
+     .catch (err => console.error(err))
+     }
     
     const columns = [
         {
@@ -50,12 +84,26 @@ export default function TrainingsList() {
             Header: 'Last Name',
             accessor: 'customer.lastname'
         },
+        {
+            sortable: false,
+            filterable: false,
+            width: 100,
+        accessor: '_links.self.href',
+        Cell: row => <Button size="small" color="error" onClick={() => deleteTraining(row.value)}>Delete</Button>
+        },
+        {
+            sortable: false,
+            filterable: false,
+            width: 100,
+            Cell: row => <EditTrainings  updateTraining={updateTraining} training={row.original} />
+        }
 
 
     ]
 
     return (
         <div>
+            <AddTraining saveTraining={saveTraining} />
             <ReactTable filterable={true}  data={trainings} columns={columns} />
             <Snackbar
                 open={open}
@@ -63,6 +111,7 @@ export default function TrainingsList() {
                 onClose={handleClose}
                 message=" deleted"
             />
+            <TrainingsList />
         </div>
     );
 }

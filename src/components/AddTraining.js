@@ -5,14 +5,15 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import DateTimePicker from 'react-datetime-picker';
 
 
 export default function AddTraining(props) { 
     const [open, setOpen] = React.useState(false);
-    const [car, setCar] = React.useState({
-        brand: '', model: '', color: '', fuel: '', year: '', price:''
+    const [date, setDate] = React.useState(new Date())
+    const [training, setTraining] = React.useState({
+        date: '', duration: '', activity: '', customer: props.params.value,
     })
-
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -22,76 +23,61 @@ export default function AddTraining(props) {
       setOpen(false);
     };
 
+    const handleChange = (date) => {
+        setDate(date);
+        setTraining({
+          ...training,
+          date: date
+        })
+      };
+
     const handleInputChange = (e) => {
-        setCar({...car, [e.target.name]: e.target.value})
+        setTraining({...training, [e.target.name]: e.target.value})
     }
     
-    const addCar = () => {
-        props.saveCar(car);
-        handleClose()
+    const addTraining = () => {
+        props.addTraining(training);
+        handleClose();
     }
 
     return(
     <div>
-    <Button style={{margin: 10}} variant="outlined" onClick={handleClickOpen}>
-        Add Car
+    <Button size="small" variant="outlined" onClick={handleClickOpen}>
+        Add training
     </Button>
     <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add car</DialogTitle>
+        <DialogTitle>Add training</DialogTitle>
             <DialogContent>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    name="brand"
-                    value={car.brand}
-                    onChange={e => handleInputChange(e)}
-                    label="Brand"
-                    fullWidth
-                />
+                
+            <DateTimePicker 
+            onChange={handleChange}
+            name = "date"
+            format = "MM/dd/yyyy HH:mm"
+            value={date} 
+            />
+
                     <TextField
                     margin="dense"
-                    name="model"
-                    value={car.model}
+                    name="duration"
+                    value={training.duration}
                     onChange={e => handleInputChange(e)}
-                    label="Model"
+                    label="Duration"
                     fullWidth
                 />
                         <TextField
                     margin="dense"
-                    name="color"
-                    value={car.color}
+                    name="activity"
+                    value={training.activity}
                     onChange={e => handleInputChange(e)}
-                    label="Color"
+                    label="Activity"
                     fullWidth
                 />
-                        <TextField
-                    margin="dense"
-                    name="year"
-                    value={car.year}
-                    onChange={e => handleInputChange(e)}
-                    label="Year"
-                    fullWidth
-                />
-                        <TextField
-                    margin="dense"
-                    name="fuel"
-                    value={car.fuel}
-                    onChange={e => handleInputChange(e)}
-                    label="Fuel"
-                    fullWidth
-                />
-                        <TextField
-                    margin="dense"
-                    name="price"
-                    value={car.price}
-                    onChange={e => handleInputChange(e)}
-                    label="Price"
-                    fullWidth
-                />
+               
+
             </DialogContent>
     <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={addCar}>Add</Button>
+        <Button onClick={addTraining}>Add</Button>
     </DialogActions>
     </Dialog>
     </div>

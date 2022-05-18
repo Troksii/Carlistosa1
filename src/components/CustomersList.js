@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import ReactTable from 'react-table';
-import 'react-table/react-table.css'
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
+import { AgGridReact } from 'ag-grid-react'
+import 'ag-grid-community/dist/styles/ag-grid.css'
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css'
 import Snackbar from '@mui/material/Snackbar';
 import Button from '@mui/material/Button';
 import AddCustomer from './AddCustomer';
 import EditCustomers from './EditCustomers';
+import AddTraining from './AddTraining'
 
 export default function CustomersList() {
     const [customers, setCustomers] = useState([]);
     const [open, setOpen] = React.useState(false);
     useEffect(() => fetchData(), []);
-
+    const [message, setMessage] = useState('');
+    const gridRef = useRef();
+    
+    const popupParent = useMemo(() => {
+        return document.body;
+      }, []);
+      
     const fetchData = () => {
         fetch('https://customerrest.herokuapp.com/api/customers')
         .then(response => response.json())
@@ -22,10 +30,16 @@ export default function CustomersList() {
         setOpen(false);
     }; 
 
+    const onBtnExport = () => {
+        gridRef.current.exportDataAsCsv();
+      };
+
     const deleteCustomer = (link) => {
+        console.log(link)
         if (window.confirm('Delete customer?')) {
         setOpen(true);
         fetch(link, {method: 'DELETE'})
+        .then(_ => setMessage('Customer deleted'))
         .then(res => fetchData())
         .catch(err => console.error(err))
     }
@@ -44,7 +58,19 @@ export default function CustomersList() {
     .catch(err => console.error(err))
     }
 
-    const updateCustomer = (link, customer) => {
+    const addTraining = (training) => {
+        fetch('https://customerrest.herokuapp.com/api/trainings', {
+            method: 'POST',
+            headers: { 'Content-type': 'application/json' },
+            body: JSON.stringify(training)
+        })
+            .then(_ => setMessage('Training added'))
+            .then(_ => setOpen(true))
+            .catch(err => console.error(err))
+    }
+  
+
+    const updateCustomer = (customer, link) => {
         fetch(link, {
         method : 'PUT',
         headers: {
@@ -52,66 +78,108 @@ export default function CustomersList() {
         },
         body: JSON.stringify(customer)
      }) 
+     .then(_ => setMessage('Customer updated'))
      .then (res => fetchData())
      .catch (err => console.error(err))
      }
+     
     const columns = [
         {
-            Header: 'First name',
-            accessor: 'firstname'
-
+            headerName: 'First name',
+            field: 'firstname',
+            sortable: true, 
+            filter: true,
         },
         {
-            Header: 'Last name',
-            accessor: 'lastname'
+            headerName: 'Last name',
+            field: 'lastname',
+            sortable: true, 
+            filter: true,
         },
         {
-            Header: 'Address',
-            accessor: 'streetaddress'
+            headerName: 'Address',
+            field: 'streetaddress',
+            sortable: true, 
+            filter: true,
         },
         {
-            Header: 'Postcode',
-            accessor: 'postcode'
+            headerName: 'Postcode',
+            field: 'postcode',
+            sortable: true, 
+            filter: true,
         },
         {
-            Header: 'City',
-            accessor: 'city'
+            headerName: 'City',
+            field: 'city',
+            sortable: true, 
+            filter: true,
         },
         {
-            Header: 'Email',
-            accessor: 'email'
+            headerName: 'Email',
+            field: 'email',
+            sortable: true, 
+            filter: true,
         },
         {
-            Header: 'Phone',
-            accessor: 'phone'
+            headerName: 'Phone',
+            field: 'phone',
+            sortable: true, 
+            filter: true,
         },
+    
         {
+            headerName: 'Delete',
             sortable: false,
-            filterable: false,
+            filter: false,
             width: 100,
-        accessor: 'links.0.href',
-        Cell: row => <Button variant="outlined" color="error" onClick={() => deleteCustomer(row.value)}>Delete</Button>
+            field: 'links.0.href',
+            cellRenderer: params => <Button variant="outlined" size="small" color="error" onClick={() => deleteCustomer(params.value)}>Delete</Button>
         },
         {
+            headerName: 'Edit',
             sortable: false,
-            filterable: false,
+            filter: false,
+            field: 'links.0.href',
             width: 100,
-            Cell: row => <EditCustomers  updateCustomer={updateCustomer} customer={row.original} />
-        }
+            cellRenderer: params => <EditCustomers  updateCustomer={updateCustomer} params={params} />
+        },
 
+        {
+            headerName: 'Add Training',
+            sortable: false,
+            filter: false,
+            field: 'links.0.href',
+            cellRenderer: params => <AddTraining addTraining={addTraining} params={params} />
+        },
     ]
 
 
     return (
         <div>
             <AddCustomer saveCustomer={saveCustomer} />
-            <ReactTable filterable={true}  data={customers} columns={columns} />
+            <button onClick={onBtnExport}>Download CSV export file</button>
+            <div className="ag-theme-alpine" style={{ height: '1000px', width: '1805px', margin: 'auto' }}>
+          <AgGridReact
+              
+              ref={gridRef}
+              onGridReady={params => {
+                  gridRef.current = params.api
+              }}
+              suppressExcelExport={true}
+              popupParent={popupParent}
+              columnDefs={columns}
+              rowData={customers}
+              pagination={true}
+              paginationPageSize={20}>
+          </AgGridReact>
             <Snackbar
                 open={open}
                 autoHideDuration={6000}
                 onClose={handleClose}
-                message="Customer deleted"
+                message={message}
             />
+            
+        </div>
         </div>
     );
 }

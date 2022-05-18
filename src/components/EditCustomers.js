@@ -15,14 +15,14 @@ export default function EditCustomers(props) {
 
 
     const handleClickOpen = () => {
-        console.log(props.customer);
-        setCustomer({firstname: props.customer.firstname,
-                    lastname: props.customer.lastname,
-                    streetaddress: props.customer.streetaddress,
-                    postcode: props.customer.postcode,
-                    city: props.customer.city,
-                    email: props.customer.email,
-                    phone: props.customer.phone})
+        console.log(props.params);
+        setCustomer({firstname: props.params.data.firstname,
+                    lastname: props.params.data.lastname,
+                    streetaddress: props.params.data.streetaddress,
+                    postcode: props.params.data.postcode,
+                    city: props.params.data.city,
+                    email: props.params.data.email,
+                    phone: props.params.data.phone})
       setOpen(true);
     };
   
@@ -32,17 +32,17 @@ export default function EditCustomers(props) {
 
     const handleInputChange = (e) => {
         setCustomer({...customer, [e.target.name]: e.target.value})
-    }
+    };
     
-    const updateCustomer = () => {
-        props.updateCustomer(customer, props.customer.links.href);
+    const handleSave = () => {
+        props.updateCustomer(customer, props.params.value);
         handleClose();
-    }
+    };
   
 
     return(
     <div>
-    <Button variant="outlined" onClick={handleClickOpen}>
+    <Button size="small" variant="outlined" onClick={handleClickOpen}>
         Edit
     </Button>
     <Dialog open={open} onClose={handleClose}>
@@ -54,7 +54,7 @@ export default function EditCustomers(props) {
                     name="firstname"
                     value={customer.firstname}
                     onChange={e => handleInputChange(e)}
-                    label="First name"
+                    label="Firstname"
                     fullWidth
                 />
                     <TextField
@@ -62,7 +62,7 @@ export default function EditCustomers(props) {
                     name="lastname"
                     value={customer.lastname}
                     onChange={e => handleInputChange(e)}
-                    label="Last Name"
+                    label="LastName"
                     fullWidth
                 />
                         <TextField
@@ -108,12 +108,11 @@ export default function EditCustomers(props) {
             </DialogContent>
     <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={updateCustomer}>Update</Button>
+        <Button onClick={handleSave}>Update</Button>
     </DialogActions>
     </Dialog>
     </div>
 
     );
-
 
 }

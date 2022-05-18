@@ -8,6 +8,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import {  BrowserRouter,  Routes,  Route,  Link, Outlet, } from"react-router-dom";
 import Button from '@mui/material/Button';
+import TrainingsCalendar from './components/TrainingsCalendar';
 
 function App() {
   
@@ -17,11 +18,15 @@ function App() {
   <AppBar position="static">
     <Toolbar>
     <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>
-    <Button variant="outlined"><Link to="/">Customers </Link>
+    <Button variant="outlined">
+      <Link to="/">Customers </Link>
       </Button>
       <Button variant="outlined">
     <Link to="/TrainingsList">Trainings </Link>
     </Button>
+    <Button variant="outlined">
+      <Link to="/Calendar">Calendar</Link>
+      </Button>
     </Typography>
     </Toolbar>
   </AppBar>
@@ -29,6 +34,7 @@ function App() {
 <Routes>
         <Route path="/" element={<CustomersList/>} exact />
         <Route path="/TrainingsList" element={<TrainingsList/>} />
+        <Route path="/Calendar" element={<TrainingsCalendar/>} />
 </Routes>
  
 </div>
